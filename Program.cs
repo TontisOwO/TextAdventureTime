@@ -42,8 +42,10 @@
 						DimRoom();
 						break;
 					case "chainroom":
+                        ChainRoom();
 						break;
 					case "invchainroom":
+                        InvChainRoom();
 						break;
 					case "combatroom":
 						break;
@@ -105,10 +107,11 @@
 		}
 		static void DimRoom()
 		{
+            Console.WriteLine("Getting a better look at the room you find that it has 3 wooden doors.\nOne door in front of you, one on the left wall and the last on the right wall.\n");
 			int response = 0;
             do
 			{
-				response = int.Parse(AskQuestion("Getting a better look at the room you find that it has 3 wooden doors.\nOne door in front of you, one on the left wall and the last on the right wall.\n\nWhat would you like to do? (answer with the corresponding number)\n1. Investigate the room further.\n2. Attempt to go left.\n3. Attempt to go right.\n4. Attempt to go forward."));
+				response = int.Parse(AskQuestion("What would you like to do? (answer with the corresponding number)\n1. Investigate the room further.\n2. Attempt to go left.\n3. Attempt to go right.\n4. Attempt to go forward."));
 				
 			} while (response <= 0 || response > 4);
             switch (response)
@@ -134,7 +137,7 @@
 			Console.WriteLine("You move to the left door and open it.\nThe first thing you’re met with is the stench of rot flooding out of the room like some sickly tidal wave.\nRecovering from the appalling smell you get a look at the room, finding it to be the remnants of an old dining hall.\nThe hall is filled with old stone tables, still covered in plates of rotting food clearly being the source of the foul odor.\nOn the right wall of the room is an opening leading into a makeshift kitchen.");
             do
             {
-                response = int.Parse(AskQuestion("\nWhat would you like to do? (answer with the corresponding number)\n1.Investigate the dining hall.\n2.Enter into the kitchen.\n3.Return to the previous room."));
+                response = int.Parse(AskQuestion("What would you like to do? (answer with the corresponding number)\n1.Investigate the dining hall.\n2.Enter into the kitchen.\n3.Return to the dark room."));
 
             } while (response <= 0 || response > 3);
             switch (response)
@@ -285,10 +288,10 @@
         static void LockedRoom()
         {
             int response = 0;
-            Console.WriteLine("");
+            Console.WriteLine("Inside you find the remains of an old armory.\nEmpty shelves and tables covered in dust line the walls of the room.\nA large 1 is carved onto the wall in front of you.\nThe only things left here are a shield and long sword.");
             do
             {
-                response = int.Parse(AskQuestion("Inside you find the remains of an old armory.\nEmpty shelves and tables covered in dust line the walls of the room.\nA large 1 is carved onto the wall in front of you.\nThe only things left here are a shield and long sword.\nWhat would you like to do? (answer with the corresponding number)\n1. Inspect the sword and shield.\n2. Return to the previous room."));
+                response = int.Parse(AskQuestion("What would you like to do? (answer with the corresponding number)\n1. Inspect the sword and shield.\n2. Return to the previous room."));
 
             } while (response <= 0 || response > 2);
             switch (response)
@@ -333,7 +336,8 @@
                 int response = 0;
                 do
                 {
-                    response = int.Parse(AskQuestion("Taking a closer look at the sword and shield you find that the sword would require both your hands to wield.\nYou can only take one of the two. Choose. (answer with the corresponding number)\n1. Take the long sword.\n2. Take the shield.\n3. Take Neither."));
+                    Console.Write("Taking a closer look at the sword and shield you find that the sword would require both your hands to wield.\nYou can only take one of the two. ");
+                    response = int.Parse(AskQuestion("Choose. (answer with the corresponding number)\n1. Take the long sword.\n2. Take the shield.\n3. Take Neither."));
 
                 } while (response <= 0 || response > 3);
                 switch (response)
@@ -375,7 +379,7 @@
 
                 }
             }
-						player.location = "lockedroom";
+		    player.location = "lockedroom";
 
         }
 
@@ -385,7 +389,7 @@
             int response = 0;
             do
             {
-                response = int.Parse(AskQuestion("What would you like to do? (answer with the corresponding number)\n1.Investigate the chained corpses.\n2.Investigate the rusted door.\n3.Return to the previous room."));
+                response = int.Parse(AskQuestion("What would you like to do? (answer with the corresponding number)\n1.Investigate the chained corpses.\n2.Investigate the rusted door.\n3.Return to the dark room."));
 
             } while (response <= 0 || response > 3);
             switch (response)
@@ -394,12 +398,12 @@
                     player.location = "invchainroom";
                     break;
                 case 2:
+                    Console.WriteLine("You approach the rusted door and peek through the bars.\nOn the other side you see yet another room, in its center appears to be a person, hunched over and breathing heavily.\nUpon adjusting to the darkness of the room you get a clearer view of the figure. The clearer view lets you see its ragged clothes and rotting flesh, whatever this creature is it is not human")
                     int response2 = 0;
                     do
                     {
-                        response2 = int.Parse(AskQuestion("You approach the rusted door and peek through the bars.\nOn the other side you see yet another room, in its center appears to be a person, hunched over and breathing heavily.\nUpon adjusting to the darkness of the room you get a clearer view of the figure. The clearer view lets you see its ragged clothes and rotting flesh, whatever this creature is it is not human"));
-
-                    } while (response2 <= 0 || response2 > 2);
+                        response2 = int.Parse(AskQuestion("What would you like to do? (answer with the corresponding number)\n1. Attempt to open the door.\n2. Use your voice to bait it over to the door.\n3. Move away from the door."));
+                    } while (response2 <= 0 || response2 > 3);
                     switch (response2)
                     {
                         case 1:
@@ -410,6 +414,9 @@
                             Console.WriteLine("The creature turns revealing its sunken, bloodshot eyes and peeling skin. It approaches the door and moves its clawed hand to the handle causing the rusty door to swing open.\nAs it does you so deliver a strike to the creature, knocking it back. The surprise momentarily stunning the creature before recovering, unleashing a bloodcurdling screech as it rushes you, clawed hands raised!");
                             Combat(30, 2, 1, "Rotting Husk", false);
                             break;
+                        case 3:
+                            ChainRoom()
+                            return;
                     }
                     break;
                 case 3:
@@ -493,7 +500,7 @@
                 switch(result)
                 {
                     case 1:
-                        currentEnemy.TakeDamage(player.strength * (new int= RollD6()))
+                        currentEnemy.TakeDamage(player.strength * (new int = RollD6()))
                         currentEnemy.TakeAction();
                         break;
                     case 2:
@@ -522,25 +529,34 @@
                         }
                         else
                         {
-
+                            player.RecoverHealth(player.inventory.Find(new Item { itemName "vigorous potion" }))
                         }
-                            break;
+                        break;
                     case 5:
                         maxActions = 3;
                         usedPotion = true;
                         if (player.inventory.Contains(new Item { itemName = "chilling potion" }))
                         {
-                            Enemy.TakeDamage(player.inventory.Find(new Item { itemName "chilling potion" }));
-
+                            currentEnemy.TakeDamage(player.inventory.Find(new Item { itemName "chilling potion" }));
                         }
                         else
                         {
-
+                            currentEnemy.RecoverHealth(player.inventory.Find(new Item { itemName "vigorous potion" }));
                         }
                         break;
                 }
-            } while (currentEnemy.hitPoints > 0 && player.hitPoints > 0) ;
+            } while (currentEnemy.hitPoints > 0 && player.hitPoints > 0);
 
+            if (player.hitPoints < 0)
+            {
+                player.location = "deathscreenroom";
+                return;
+            }
+            if (enemyName = "Rotting Husk")
+            {
+                key = true;
+                player.location = "combatroom";
+            }
         }
 
         static string AskQuestion(string question)
@@ -630,7 +646,11 @@
 				Console.WriteLine($"{this.enemyName} is slain, {playerName} is victorious!");
 			}
 		}
-	}
+        public void RecoverHealth(int healing)
+        {
+            this.hitPoints += healing;
+        }
+    }
 
 	public class Player
 	{
