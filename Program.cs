@@ -398,7 +398,7 @@
                     player.location = "invchainroom";
                     break;
                 case 2:
-                    Console.WriteLine("You approach the rusted door and peek through the bars.\nOn the other side you see yet another room, in its center appears to be a person, hunched over and breathing heavily.\nUpon adjusting to the darkness of the room you get a clearer view of the figure. The clearer view lets you see its ragged clothes and rotting flesh, whatever this creature is it is not human")
+                    Console.WriteLine("You approach the rusted door and peek through the bars.\nOn the other side you see yet another room, in its center appears to be a person, hunched over and breathing heavily.\nUpon adjusting to the darkness of the room you get a clearer view of the figure. The clearer view lets you see its ragged clothes and rotting flesh, whatever this creature is it is not human");
                     int response2 = 0;
                     do
                     {
@@ -415,7 +415,7 @@
                             Combat(30, 2, 1, "Rotting Husk", false);
                             break;
                         case 3:
-                            ChainRoom()
+                            ChainRoom();
                             return;
                     }
                     break;
@@ -500,7 +500,7 @@
                 switch(result)
                 {
                     case 1:
-                        currentEnemy.TakeDamage(player.strength * (new int = RollD6()))
+                        currentEnemy.TakeDamage(player.strength * (new int = RollD6()));
                         currentEnemy.TakeAction();
                         break;
                     case 2:
@@ -525,11 +525,11 @@
                         usedPotion = true;
                         if (player.inventory.Contains(new Item { itemName = "chilling potion" }))
                         {
-                            player.TakeDamage(player.inventory.Find(new Item { itemName "chilling potion"}));
+                            player.TakeDamage(player.inventory.Find(new Item { itemName = "chilling potion"}));
                         }
                         else
                         {
-                            player.RecoverHealth(player.inventory.Find(new Item { itemName "vigorous potion" }))
+                            player.RecoverHealth(player.inventory.Find(new Item { itemName = "vigorous potion" }));
                         }
                         break;
                     case 5:
@@ -537,11 +537,11 @@
                         usedPotion = true;
                         if (player.inventory.Contains(new Item { itemName = "chilling potion" }))
                         {
-                            currentEnemy.TakeDamage(player.inventory.Find(new Item { itemName "chilling potion" }));
+                            currentEnemy.TakeDamage(player.inventory.Find(new Item { itemName = "chilling potion" }));
                         }
                         else
                         {
-                            currentEnemy.RecoverHealth(player.inventory.Find(new Item { itemName "vigorous potion" }));
+                            currentEnemy.RecoverHealth(player.inventory.Find(new Item { itemName = "vigorous potion" }));
                         }
                         break;
                 }
@@ -549,7 +549,8 @@
 
             if (player.hitPoints < 0)
             {
-                player.location = "deathscreenroom";
+                //temporary
+                player.location = "quitroom";
                 return;
             }
             if (enemyName = "Rotting Husk")
