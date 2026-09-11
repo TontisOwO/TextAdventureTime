@@ -5,15 +5,17 @@
 	class Program
 	{
         static Player player = new Player();
+		static Enemy currentEnemy;
 		static bool potion = false;
 		static bool knife = false;
         static bool knifeInLockedRoom = false;
         static bool key = false;
         static bool usedKey = false;
         static bool sword = false;
-        static bool swordInKitchen = false;
+        static bool swordInKitchenRoom = false;
         static bool shield = false;
-
+        static bool puzzleSolved = false;
+        static bool usedPotion = false;
         static void Main(string[] args)
 		{
 			NewGame(player);
@@ -87,9 +89,11 @@
             key = false;
             sword = false;
             shield = false;
-            swordInKitchen = false;
+            swordInKitchenRoom = false;
             knifeInLockedRoom = false;
 			usedKey = false;
+            puzzleSolved = false;
+            usedPotion = false;
             Console.WriteLine("You awake, finding yourself alone in a dark, damp chamber.\nThe only light coming from the cinders of a dying torch on the opposite side of the room.");
             string name;
 			do
@@ -152,6 +156,7 @@
 			if (potion) 
 			{
 				Console.WriteLine("You find nothing new. Just the same carving of a 2 on the wall.");
+				player.location = "diningroom";
 				return;
 			}
 			bool answer = AskYesOrNo("Searching the dining hall you initially find nothing aside from the rotting food and mold filled cups. However, after thoroughly searching the entire hall you find 2 things.\nFirst is a carving of a 2 on one of the walls, initially hidden by an old drapery.\nSecond is a flask containing a red liquid.\nDo you wish to take the flask with you?");
@@ -169,6 +174,8 @@
                     }
                     Console.WriteLine("Looking at the warm liquid within the bottle awakens a feeling of vigor in you.");
                     player.inventory.Add(new Item() { itemName = "vigorous potion", value = 30 });
+                    player.location = "diningroom";
+                    break;
                 case false:
                     player.location = "diningroom";
                     break;
@@ -207,23 +214,20 @@
             switch (answer)
             {
                 case true:
+					
                     bool hasSword = false;
-                    for (int i = 0; i <= player.inventory.count; i++)
+					
+					if (player.inventory.Contains(new Item() { itemName = "sword" }))
                     {
-                        if (player.inventory<i>.name == "sword")
-                        {
-                            hasSword = true;
-                            SwordPos = i;
-                            break;
-                        }
+                        hasSword = true;
                     }
                     if (hasSword)
                     {
-                        bool answer = (AskYesOrNo("As the sword requires both hands to use it would be pointless for you to carry both it and the knife.\nWould you like to leave your sword in favour of taking the knife?"));
-                        switch (answer)
+                        bool answer2 = (AskYesOrNo("As the sword requires both hands to use it would be pointless for you to carry both it and the knife.\nWould you like to leave your sword in favour of taking the knife?"));
+                        switch (answer2)
                         {
                             case true:
-                                player.inventory.Remove(SwordPos);
+                                player.inventory.Remove(new Item { itemName = "sword"});
                                 swordInKitchenRoom = true;
 								break;
                             case false:
@@ -233,6 +237,8 @@
                     }
                     player.inventory.Add(new Item() { itemName = "knife", value = 2 });
 					knife = true;
+                    player.location = "kitchenroom";
+                    break;
                 case false:
 					player.location = "kitchenroom";
                     break;
@@ -251,17 +257,18 @@
                     switch (answer)
                     {
                         case true:
-                            for (int i = 0; i <= player.inventory.count; i++)
-							{
-								if (player.inventory<i>.name == "key")
+                            
+								if (player.inventory.Contains(new Item() { itemName = "key" }))
 								{
-									player.inventory.remove(i);
+									player.inventory.Remove(new Item() { itemName = "key" });
 									usedKey = true;
 									Console.WriteLine("As you turn the key and unlock the door you hear a loud snap.\nRemoving the key from the door you find that the flimsy thing has snapped in half.\nHaving no use for a broken key you throw it away as you enter into the newly unlocked room.");
                                     player.location = "lockedroom";
 										return;
 								}
-							}
+                            player.location = "dimroom";
+
+                            break;
                         case false:
                             player.location = "dimroom";
                             break;
@@ -272,7 +279,7 @@
 			{
                 player.location = "lockedroom";
             }
-			
+            player.location = "dimroom";
         }
 
         static void LockedRoom()
@@ -304,19 +311,20 @@
 				switch (answer)
 				{
 					case true:
-						for (int i = 0; i <= player.inventory.count; i++)
-						{
-							if (player.inventory<i>.name == "sword")
+						
+							if (player.inventory.Contains(new Item() { itemName = "sword" }))
 							{
-								player.inventory.remove(i);
+								player.inventory.Remove(new Item { itemName = "sword" });
 							}
-						}
+						
                         player.inventory.Add(new Item() { itemName = "knife", value = 2 });
                         player.inventory.Add(new Item() { itemName = "shield", value = 10 });
                         sword = false;
+                        player.location = "lockedroom";
 
+                        break;
                     case false:
-						palyer.location = "lockedroom";
+						player.location = "lockedroom";
 						break;
 				}
 			}
@@ -333,24 +341,23 @@
                     case 1:
                         bool hasKnife = false;
                         int knifePos = 0;
-                        for (int i = 0; i <= player.inventory.count; i++)
-                        {
-                            if (player.inventory<i>.name == "knife")
+                        
+                            if (player.inventory.Contains(new Item() { itemName = "knife" }))
                             {
                                 hasKnife = true;
-                                knifePos = i;
-                                break;
                             }
-                        }
+                        
                         if (hasKnife)
                         {
                             bool answer = (AskYesOrNo("As the sword requires both hands to use it would be pointless for you to carry both it and the knife.\nWould you like to leave your knife in favour of taking the sword?"));
                             switch (answer)
                             {
                                 case true:
-                                    player.inventory.Remove(knifePos);
+                                    player.inventory.Remove(new Item { itemName = "knife" });
                                     player.inventory.Add(new Item() { itemName = "sword", value = 4 });
                                     knifeInLockedRoom = true;
+                                    InvLockedRoom();
+                                    break;
                                 case false:
                                     InvLockedRoom();
 									return;
@@ -359,8 +366,8 @@
                         else
                         {
                             player.inventory.Add(new Item() { itemName = "sword", value = 4 });
-                            break;
                         }
+						break;
                     case 2:
                         break;
                     case 3:
@@ -368,7 +375,81 @@
 
                 }
             }
-			
+						player.location = "lockedroom";
+
+        }
+
+        static void ChainRoom()
+        {
+            Console.WriteLine("Moving to the door in front of you, you find it unlocked.\nGoing through it you find yourself in yet another room, this one larger and more lit than the previous. The air in here is stale and filled with the faded stench of death.\nChains hang from the ceiling, some binding long dead corpses. The wall opposite of the way you entered has yet another door, this one made of rusted steel with a barred window on it.");
+            int response = 0;
+            do
+            {
+                response = int.Parse(AskQuestion("What would you like to do? (answer with the corresponding number)\n1.Investigate the chained corpses.\n2.Investigate the rusted door.\n3.Return to the previous room."));
+
+            } while (response <= 0 || response > 3);
+            switch (response)
+            {
+                case 1:
+                    player.location = "invchainroom";
+                    break;
+                case 2:
+                    int response2 = 0;
+                    do
+                    {
+                        response2 = int.Parse(AskQuestion("You approach the rusted door and peek through the bars.\nOn the other side you see yet another room, in its center appears to be a person, hunched over and breathing heavily.\nUpon adjusting to the darkness of the room you get a clearer view of the figure. The clearer view lets you see its ragged clothes and rotting flesh, whatever this creature is it is not human"));
+
+                    } while (response2 <= 0 || response2 > 2);
+                    switch (response2)
+                    {
+                        case 1:
+                            Console.WriteLine("As you open the door, the creature turns, its jaw unhinging as it unleashes a raspy screech before rushing at you, clawed hands raised!");
+                            Combat(40, 2, 1, "Rotting Husk", false);
+                            break;
+                        case 2:
+                            Console.WriteLine("The creature turns revealing its sunken, bloodshot eyes and peeling skin. It approaches the door and moves its clawed hand to the handle causing the rusty door to swing open.\nAs it does you so deliver a strike to the creature, knocking it back. The surprise momentarily stunning the creature before recovering, unleashing a bloodcurdling screech as it rushes you, clawed hands raised!");
+                            Combat(30, 2, 1, "Rotting Husk", false);
+                            break;
+                    }
+                    break;
+                case 3:
+                    player.location = "dimroom";
+                    break;
+            }
+        }
+
+        static void InvChainRoom()
+        {
+            Console.WriteLine("Investigating the corpses you find most of them having nothing on them but tattered cloth. But upon investigating further you find one corpse hunched over, as if hiding something.\nMoving it aside you find 3 buttons with a carving above the first and second buttons.\nThe first button is marked with what looks like a table, the second button is marked with a sword.");
+            int response = 0;
+            do
+            {
+                response = int.Parse(AskQuestion("What would you like to do? (answer with the corresponding number)\n1.Press the buttons.\n2. Back away from the buttons."));
+
+            } while (response <= 0 || response > 2);
+            switch (response)
+            {
+                case 1:
+                    int response2;
+                    
+                    response2 = int.Parse(AskQuestion("Please enter the order in which you would like to enter them. (example: 123, 321, etc.)"));
+                    if (response2 == 213)
+                    { 
+                        puzzleSolved = true;
+                        Console.WriteLine("As you enter the buttons in the right order you hear something shift behind the rusty door.");
+                        player.location = "chainroom";
+                    }
+                    else
+                    {
+                        Console.WriteLine("As you press the buttons, nothing happens.");
+                        player.location = "chainroom";
+                    }
+
+                    break;
+                case 2:
+                    player.location = "chainroom";
+                    break;
+            }
         }
 
         static void Room()
@@ -393,14 +474,74 @@
             }
         }
 
-		static void Combat(int enemyHp, int enemyStrength, int enemyDefence, string enemyName)
+		static void Combat(int enemyHp, int enemyStrength, int enemyDefense, string enemyName, bool isBoss)
 		{
-			Enemy enemy = new Enemy() {player, enemyName, enemyHp, enemyStrength, enemyDefence};
-			do
-			{
+			currentEnemy = new Enemy() {playerName = player, enemyName = enemyName, hitPoints = enemyHp, strength = enemyStrength, defense = enemyDefense, isBoss = isBoss};
+            int maxActions = 3;
+            int result;
+            do{
+                do {
+                    Console.WriteLine("Choose an action to take. (answer with the corresponding number)\n1.Attack the enemy.\n2.Take a defensive stance.\n3.Attempt to flee.");
+                    if (potion && !usedPotion)
+                    {
+                        maxActions = 5;
+                        Console.WriteLine("4.Drink your potion.\n5.Throw your potion.");
+                    }
+                    result = Console.ReadLine();
+                } while (result >= 1 && result <= maxActions);
 
-			} while (player.hitPoints > 0 && enemy.hitpoints > 0);
-		}
+                switch(result)
+                {
+                    case 1:
+                        currentEnemy.TakeDamage(player.strength * (new int= RollD6()))
+                        currentEnemy.TakeAction();
+                        break;
+                    case 2:
+                        player.defending = true;
+                        enemy.TakeAction();
+                        break;
+                    case 3:
+                        if(!currentEnemy.isBoss)
+                        {
+                            Console.WriteLine("You flee from the beast, leaving it behind as you return to where you started.");
+                            player.location = "dimroom";
+                            return;
+                        }
+                        else
+                        {
+                            Console.WriteLine("You attempt to flee from the robed figure, but as soon as you turn your back the foul thing has already moved to block your escape!");
+                            currentEnemy.TakeAction();
+                        }
+                        break;
+                    case 4:
+                        maxActions = 3;
+                        usedPotion = true;
+                        if (player.inventory.Contains(new Item { itemName = "chilling potion" }))
+                        {
+                            player.TakeDamage(player.inventory.Find(new Item { itemName "chilling potion"}));
+                        }
+                        else
+                        {
+
+                        }
+                            break;
+                    case 5:
+                        maxActions = 3;
+                        usedPotion = true;
+                        if (player.inventory.Contains(new Item { itemName = "chilling potion" }))
+                        {
+                            Enemy.TakeDamage(player.inventory.Find(new Item { itemName "chilling potion" }));
+
+                        }
+                        else
+                        {
+
+                        }
+                        break;
+                }
+            } while (currentEnemy.hitPoints > 0 && player.hitPoints > 0) ;
+
+        }
 
         static string AskQuestion(string question)
 		{
@@ -418,7 +559,7 @@
 		{
 			while(true)
 			{
-				string response = AskQuestion(question, false).ToLower();
+				string response = AskQuestion(question).ToLower();
 				switch (response)
 				{
 					case "yes":
@@ -449,8 +590,10 @@
 		public int strength;
 		public int defense;
 		public bool defending = false;
+		public bool isBoss;
 
-		public void TakeAction(int action)
+
+        public void TakeAction(int action)
 		{
 			action = new Random().Next() % 2 + 1;
 
@@ -491,7 +634,6 @@
 
 	public class Player
 	{
-		private Enemy enemyName;
 		public string playerName;
 		public int hitPoints = 100;
 		public int hitPointsMax = 100;
@@ -503,10 +645,15 @@
 		public void TakeDamage(int damage)
 		{
 			this.hitPoints -= damage;
-			if (this.hitPoints <= 0)
-			{
-				Console.WriteLine($"{this.playerName} was killed by {enemyName}.");
-			}
+			
 		}
+        public void RecoverHealth(int healing)
+        {
+            this.hitPoints += healing;
+            if (this.hitPoints > hitPointsMax)
+            {
+                this.hitPoints = hitPointsMax;
+            }
+        }
 	} 
 }
