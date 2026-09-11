@@ -1,5 +1,7 @@
 ﻿namespace TextAdventure
 {
+	using System.Collections.Generic;
+	
 	class Program
 	{
 		static void Main(string[] args)
@@ -54,11 +56,71 @@
 		public bool inInventory;
 	
 	}
+	class Enemy
+	{
+		private Player playerName;
+		public string enemyName;
+		public int hitPoints;
+		public int strength;
+		public int defense;
+		public bool defending = false;
+
+		public void TakeAction(int action)
+		{
+			action = new Random().Next() % 2 + 1;
+
+			switch (action)
+			{
+				case 1: //attack
+				{
+					Console.WriteLine($"{this.enemyName} attacks! {playerName} takes {this.strength} damage!");
+					playerName.TakeDamage(this.strength);
+					break;
+				}
+				case 2: //defend
+				{
+					Console.WriteLine($"{this.enemyName} raises its guard!");
+					defending = true;
+					break;
+				}
+			}
+		}
+
+		public void TakeDamage(int damage)
+		{
+			if (!defending)
+			{
+				this.hitPoints -= damage;
+			}
+			else
+			{
+				Console.WriteLine($"{this.enemyName} guards against your attack, reducing the damage it takes!");
+				this.hitPoints -= damage - defense;
+			}
+			if (this.hitPoints <= 0)
+			{
+				Console.WriteLine($"{this.enemyName} is slain, {playerName} is victorious!");
+			}
+		}
+	}
 
 	public class Player
 	{
-	public string playerName;
-	public int hitPoints = 10;
-	public System.Collections.Generic.List<Item> inventory;
-	}
+		private Enemy enemyName;
+		public string playerName;
+		public int hitPoints = 10;
+		public int defence = 1;
+		public int strength = 1;
+		public string location;
+		public List<Item> inventory = new List<Item>();
+
+		public void TakeDamage(int damage)
+		{
+			this.hitPoints -= damage;
+			if (this.hitPoints <= 0)
+			{
+				Console.WriteLine($"{this.playerName} was killed by {enemyName}.");
+			}
+		}
+	} 
 }
