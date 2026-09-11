@@ -1,5 +1,7 @@
-﻿namespace TextAdventure
+﻿namespace TextAdventureTime
 {
+	using System.Collections.Generic
+		
 	class Program
 	{
 		static void Main(string[] args)
@@ -59,6 +61,6 @@
 	{
 	public string playerName;
 	public int hitPoints = 10;
-	public System.Collections.Generic.List<Item> inventory;
+	public List<Item> inventory;
 	}
 }
